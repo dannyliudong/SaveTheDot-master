@@ -25,7 +25,7 @@ class ViewController: UIViewController {
   }
   
   // MARK: - Constants
-  fileprivate let radius: CGFloat = 10
+  fileprivate let radius: CGFloat = 15
   fileprivate let playerAnimationDuration = 5.0
   fileprivate let enemySpeed: CGFloat = 60 // points per second
   fileprivate let colors = [#colorLiteral(red: 0.08235294118, green: 0.6980392157, blue: 0.5411764706, alpha: 1), #colorLiteral(red: 0.07058823529, green: 0.5725490196, blue: 0.4470588235, alpha: 1), #colorLiteral(red: 0.9333333333, green: 0.7333333333, blue: 0, alpha: 1), #colorLiteral(red: 0.9411764706, green: 0.5450980392, blue: 0, alpha: 1), #colorLiteral(red: 0.1411764706, green: 0.7803921569, blue: 0.3529411765, alpha: 1), #colorLiteral(red: 0.1176470588, green: 0.6431372549, blue: 0.2941176471, alpha: 1), #colorLiteral(red: 0.8784313725, green: 0.4156862745, blue: 0.03921568627, alpha: 1), #colorLiteral(red: 0.7882352941, green: 0.2470588235, blue: 0, alpha: 1), #colorLiteral(red: 0.1490196078, green: 0.5098039216, blue: 0.8352941176, alpha: 1), #colorLiteral(red: 0.1137254902, green: 0.4156862745, blue: 0.6784313725, alpha: 1), #colorLiteral(red: 0.8823529412, green: 0.2, blue: 0.1607843137, alpha: 1), #colorLiteral(red: 0.7019607843, green: 0.1411764706, blue: 0.1098039216, alpha: 1), #colorLiteral(red: 0.537254902, green: 0.2352941176, blue: 0.662745098, alpha: 1), #colorLiteral(red: 0.4823529412, green: 0.1490196078, blue: 0.6235294118, alpha: 1), #colorLiteral(red: 0.6862745098, green: 0.7137254902, blue: 0.7333333333, alpha: 1), #colorLiteral(red: 0.1529411765, green: 0.2196078431, blue: 0.2980392157, alpha: 1), #colorLiteral(red: 0.1294117647, green: 0.1843137255, blue: 0.2470588235, alpha: 1), #colorLiteral(red: 0.5137254902, green: 0.5843137255, blue: 0.5843137255, alpha: 1), #colorLiteral(red: 0.4235294118, green: 0.4745098039, blue: 0.4784313725, alpha: 1)]
@@ -47,13 +47,60 @@ class ViewController: UIViewController {
   // MARK: - IBOutlets
   @IBOutlet weak var clockLabel: UILabel!
   @IBOutlet weak var startLabel: UILabel!
+    @IBOutlet weak var titleLabel: UILabel!
   
   // MARK: - Lifecycle
   override func viewDidLoad() {
     super.viewDidLoad()
+    
     setupPlayerView()
     prepareGame()
+    setTitleString()
   }
+    
+   
+    /**
+     
+     小龙虾包脚布
+     四色锅贴
+     乌云冰激凌
+     腌笃鲜粽子
+
+     
+     网红青团
+     喜茶
+     鲍师傅
+     奶酪包
+     火鸡面
+     豆乳盒子
+     肉松小贝
+     紫薯包
+     
+     
+     */
+    
+    func setTitleString() {
+        let random = arc4random() % 5
+        var titleString = "一大波黄牛正在来袭"
+        switch random {
+        case 0:
+            titleString = "不能抢走我青团"
+        case 1:
+            titleString = "原来你是我的喜茶"
+        case 2:
+            titleString = "鲍师傅康师傅傻傻分不清楚"
+        case 3:
+            titleString = "我发现了光之乳酪"
+        case 4:
+            titleString = "我要光之乳酪"
+        case 5:
+            titleString = "一大波黄牛正在来袭"
+        default:
+            titleString = "一大波黄牛正在来袭"
+        }
+        
+        titleLabel.text = titleString
+    }
   
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     // First touch to start the game
@@ -183,14 +230,19 @@ fileprivate extension ViewController {
     centerPlayerView()
     popPlayerView()
     startLabel.isHidden = false
+    titleLabel.isHidden = false
+
     clockLabel.text = "00:00.000"
     gameState = .ready
   }
   
   func startGame() {
+    setTitleString()
     startEnemyTimer()
     startDisplayLink()
     startLabel.isHidden = true
+    titleLabel.isHidden = true
+    
     beginTimestamp = 0
     gameState = .playing
   }
@@ -224,6 +276,7 @@ fileprivate extension ViewController {
     let seconds = interval % 60
     let minutes = (interval / 60) % 60
     let milliseconds = Int(timeInterval * 1000) % 1000
+//    return String(format: "%02d.%03d", seconds, milliseconds)
     return String(format: "%02d:%02d.%03d", minutes, seconds, milliseconds)
   }
   
@@ -260,8 +313,8 @@ fileprivate extension ViewController {
   }
   
   func displayGameOverAlert() {
-    let (title, message) = getGameOverTitleAndMessage()
-    let alert = UIAlertController(title: "Game Over", message: message, preferredStyle: .alert)
+    let (title, _) = getGameOverTitleAndMessage()
+    let alert = UIAlertController(title: "才过\(clockLabel.text!)秒 \n就被抢走了😂", message: nil, preferredStyle: .alert)
     let action = UIAlertAction(title: title, style: .default,
                                handler: { _ in
                                 self.prepareGame()
@@ -270,15 +323,22 @@ fileprivate extension ViewController {
     alert.addAction(action)
     self.present(alert, animated: true, completion: nil)
   }
+    
+    // 🤷‍♀️
+    // 休息一下 看段广告
+    
+    // 加广告
+    // 图片素材
+    // 滚动 背景地图纹理，使游戏看起来，在地图上四处乱跑。
   
   func getGameOverTitleAndMessage() -> (String, String) {
     let elapsedSeconds = Int(elapsedTime) % 60
     switch elapsedSeconds {
-    case 0..<10: return ("I try again 😂", "Seriously, you need more practice 😒")
-    case 10..<30: return ("Another go 😉", "No bad, you are getting there 😁")
-    case 30..<60: return ("Play again 😉", "Very good 👍")
+    case 0..<10: return ("怪我咯 🤷‍♀️", "Seriously, you need more practice 🤷‍♀️")
+    case 10..<30: return ("你再试试 🤷‍♀️", "No bad, you are getting there 😁")
+    case 30..<60: return ("休息一下看段广告📺", "Very good 👍")
     default:
-      return ("Off cause 😚", "Legend, olympic player, go 🇧🇷")
+      return ("怪我咯 🤷‍♀️", "Legend, olympic player, go 🤷‍♀️")
     }
   }
   
